@@ -1,97 +1,80 @@
-let img1, img2;
+const p1x = 70;
+const p1y = 70;
+const p2x = 520;
+const p2y = 20;
+const p3x = 130;
+const p3y = 510;
+const p4x = 20;
+const p4y = 410;
 
-let p = [];
-let recw = 480, rech = 320;
-let select = -1;
+//画像
+let imgElement = document.getElementById('imageSrc');
+//ファイルボックス
+let inputElement = document.getElementById('fileInput');
 
-let col;
+//ファイルを入れた時の処理
+inputElement.addEventListener('change', (e) => {
+    imgElement.src = URL.createObjectURL(e.target.files[0]);
+    console.log('ファイルが入力されたよ！');
+}, false);
 
-function preload(){
-    img1 = loadImage('S__39886850.jpg');
-}
+imgElement.onload = function() {
+    let original = cv.imread(imgElement);
+    let mat = new cv.Mat();
 
-function setup(){
-    createCanvas(windowWidth, windowHeight);
-    
-    img1.resize(480, 320);
-    img2 = createImage(480, 320);
+    original.copyTo(mat);
 
-    col = new Array(img1.width);
-    for(let i=0; i<img1.width; i++)    col[i] = new Array(img1.height);
+    const thickness = 2;
 
-    p[0] = new p5.Vector(30, 30);
-    p[1] = new p5.Vector(450, 30);
-    p[2] = new p5.Vector(450, 290);
-    p[3] = new p5.Vector(30, 290);
+    cv.line(mat, new cv.Point(p1x, p1y), new cv.Point(p2x, p2y), new cv.Scalar(255, 0, 0, 255), thickness);
+    cv.line(mat, new cv.Point(p2x, p2y), new cv.Point(p3x, p3y), new cv.Scalar(255, 0, 0, 255), thickness);
+    cv.line(mat, new cv.Point(p3x, p3y), new cv.Point(p4x, p4y), new cv.Scalar(255, 0, 0, 255), thickness);
+    cv.line(mat, new cv.Point(p4x, p4y), new cv.Point(p1x, p1y), new cv.Scalar(255, 0, 0, 255), thickness);
 
-    henkan();
+    cv.circle(mat, new cv.Point(p1x,p1y), 4, new cv.Scalar(255, 0, 0, 255), cv.FILLED);
+    cv.circle(mat, new cv.Point(p2x,p2y), 4, new cv.Scalar(255, 0, 0, 255), cv.FILLED);
+    cv.circle(mat, new cv.Point(p3x,p3y), 4, new cv.Scalar(255, 0, 0, 255), cv.FILLED);
+    cv.circle(mat, new cv.Point(p4x,p4y), 4, new cv.Scalar(255, 0, 0, 255), cv.FILLED);
 
-}
+    const srcPoints = cv.matFromArray(4, 1, cv.CV_32FC2, [p1x, p1y, p2x, p2y, p3x, p3y, p4x, p4y]);
+    const dstPoints = cv.matFromArray(4, 1, cv.CV_32FC2, [100, 100, 300, 100, 300, 300, 100, 300]);
+    const perspectiveMatrix = cv.getPerspectiveTransform(srcPoints, dstPoints);
 
-function draw(){
-    background(230);
+    let dst = new cv.Mat();
+    cv.warpPerspective(original, dst, perspectiveMatrix, new cv.Size(400, 400));
 
-    image(img1, 0, 0);
+    let rectregion = new cv.Mat();
+    let rect = new cv.Rect(100, 100, 200, 200);
+    rectregion = dst.roi(rect);
 
-    fill(255, 0, 0);
-    noStroke();
+    cv.imshow('canvasOutput1', mat);
+    cv.imshow('canvasOutput2', rectregion);
 
-    circle(p[0].x, p[0].y, 10);
-    circle(p[1].x, p[1].y, 10);
-    circle(p[2].x, p[2].y, 10);
-    circle(p[3].x, p[3].y, 10);
+    mat.delete();
 
-    stroke(255, 0, 0);
-    line(p[0].x, p[0].y, p[1].x, p[1].y);
-    line(p[1].x, p[1].y, p[2].x, p[2].y);
-    line(p[2].x, p[2].y, p[3].x, p[3].y);
-    line(p[3].x, p[3].y, p[0].x, p[0].y);
+};
 
-    translate(500, 0);
-
-    image(img2, 0, 0);
-
-    if(select>=0){
-        p[select].x = constrain(mouseX, 0, recw);
-        p[select].y = constrain(mouseY, 0, rech);
+var Module = {
+ // https://emscripten.org/docs/api_reference/module.html#Module.onRuntimeInitialized
+    onRuntimeInitialized() {
+        document.getElementById('status').innerHTML = 'OpenCV.js is ready.';
     }
+};
+
+//ページ上をクリック（マウスプレス）したとき座標を出力
+document.addEventListener('mousedown',function(event){
+    console.log('x ' + event.offsetX + ' y ' + event.offsetY);
+},false);
+
+
+/*
+//ボタン１イベント
+function button1_event(){
+    console.log("ボタン１が押された！");
 }
 
-
-function mousePressed(){
-    for(let i=0; i<4; i++){
-        if(dist(mouseX, mouseY, p[i].x, p[i].y)<20){
-            select = i;
-            break;
-        }
-    }
+//ボタン２イベント
+function button2_event(){
+    console.log("ボタン２が押された！");
 }
-
-function mouseReleased(){
-    select = -1;
-    henkan();
-}
-
-function henkan(){
-    let x0, x1;
-    for(let i=0; i<recw; i++)   for(let j=0; j<rech; j++){
-        if(j/i < rech/recw){
-            x0 = (rech*i-recw*j)/(recw*rech);
-            x1 = (recw*j)/(recw*rech);
-            col[i][j] = img1.get(p[0].x+(p[1].x-p[0].x)*x0+(p[2].x-p[0].x)*x1, p[0].y+(p[1].y-p[0].y)*x0+(p[2].y-p[0].y)*x1);
-        }else{
-            x0 = (rech*i-recw*j)/(-rech*recw);
-            x1 = (-rech*i)/(-rech*recw);
-            col[i][j] = img1.get(p[0].x+(p[3].x-p[0].x)*x0+(p[2].x-p[0].x)*x1, p[0].y+(p[3].y-p[0].y)*x0+(p[2].y-p[0].y)*x1);
-        }
-    }
-
-    img2.loadPixels();
-    for(let i=0; i<img2.width; i++) for(let j=0; j<img2.height; j++){
-        img2.pixels [i*4+j*4*img2.width] = col[i][j][0];       
-        img2.pixels [i*4+j*4*img2.width+1] = col[i][j][1];
-        img2.pixels [i*4+j*4*img2.width+2] = col[i][j][2]; 
-        img2.pixels [i*4+j*4*img2.width+3] = 255;
-    }
-    img2.updatePixels();
-}
+*/
