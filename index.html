@@ -1,9 +1,25 @@
 <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.3.1/p5.js"></script>
-    <script src="script.js"></script>
-    <meta charset="utf-8" />
-  </head>
-  <body></body>
+<html>
+<head>
+    <meta charset="utf-8">
+</head>
+<body>
+    <p id="status">OpenCV.js is loading...</p>
+    <div>
+        <div class="inputoutput">
+        <div class="caption">imageSrc <input type="file" id="fileInput" name="file" /></div>
+        <img id="imageSrc" alt="No Image" />
+        </div><canvas id="canvasOutput1" ></canvas></div>
+        </div><canvas id="canvasOutput2" ></canvas></div>
+    </div>
+
+    <!--ボタン
+    <input type = "button" value="ボタン１" onclick="button1_event()" style="position:absolute; left:30px; top:300px"/>
+    <input type = "button" value="ボタン２" onclick="button2_event()" style="position:absolute; left:70px; top:340px"/>
+    -->
+
+    <!--ソースコード-->
+    <script src = script.js></script>
+    <script src="https://docs.opencv.org/3.4.1/opencv.js"></script>
+</body>
 </html>
