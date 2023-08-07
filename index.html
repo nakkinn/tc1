@@ -4,13 +4,25 @@
     <meta charset="utf-8">
 </head>
 <body>
-    <p id="status">OpenCV.js is loading...</p>
+
     <div>
         <div class="inputoutput">
-        <div class="caption">imageSrc <input type="file" id="fileInput" name="file" /></div>
-        <img id="imageSrc" alt="No Image" />
-        </div><canvas id="canvasOutput1" ></canvas></div>
-        </div><canvas id="canvasOutput2" ></canvas></div>
+        <div class="caption"><input type="file" id="fileInput" name="file" /></div>
+
+        <img hidden id="imageSrc" alt="No Image" />
+
+        <p></p>
+        <canvas id="canvas1" ></canvas>
+        <p></p>
+        <canvas id="canvas2" style="width:600px"></canvas>
+        <p></p>
+        <canvas id="canvas3" ></canvas>
+        <p></p>
+        <canvas id="canvas4" style="width:600px"></canvas>
+        <p></p>
+        <canvas id="canvas5" ></canvas>
+        <p></p>
+
     </div>
 
     <!--ボタン
@@ -21,5 +33,6 @@
     <!--ソースコード-->
     <script src = script.js></script>
     <script src="https://docs.opencv.org/3.4.1/opencv.js"></script>
+    <script src = "style.css"></script>
 </body>
 </html>
