@@ -36,3 +36,39 @@
     <script src = "style.css"></script>
 </body>
 </html>
+
+<!--
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Text File Download</title>
+</head>
+<body>
+    <button id="downloadButton">Download Text File</button>
+
+    <script>
+        // ファイル名と内容を設定
+        const fileName = "example.txt";
+        const fileContent = "This is the content of the text file.";
+
+        // ボタンがクリックされたときの処理
+        document.getElementById("downloadButton").addEventListener("click", () => {
+            // テキストファイルを生成
+            const blob = new Blob([fileContent], { type: "text/plain" });
+
+            // ダウンロードリンクを作成
+            const a = document.createElement("a");
+            a.href = URL.createObjectURL(blob);
+            a.download = fileName;
+
+            // リンクをクリックしてダウンロードを開始
+            a.click();
+
+            // 不要なURLオブジェクトを解放
+            URL.revokeObjectURL(a.href);
+        });
+    </script>
+</body>
+</html>
+-->
+
